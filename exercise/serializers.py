@@ -77,7 +77,7 @@ class NewsSerializer(serializers.HyperlinkedModelSerializer):
 
 class AnswerExerciseSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.StringRelatedField()
-    exercise = serializers.HyperlinkedIdentityField(view_name='exercises_detail')
+    exercise = serializers.StringRelatedField()
     url = serializers.HyperlinkedIdentityField(view_name='answer_detail')
     date = serializers.DateTimeField(read_only=True)
 

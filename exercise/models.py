@@ -47,14 +47,14 @@ class Exercise(models.Model):
 
 
 class AnswerExercise(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    author = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='documents/', blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
 
     def access(self):
-        if self.date > self.exercise_date:
+        if timezone.now() > self.exercise.deadline:
             return False
         else:
             return True
