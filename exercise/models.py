@@ -5,7 +5,7 @@ from accounts.models import User
 
 class Lesson(models.Model):
     title = models.CharField(max_length=60)
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher')
+    teacher = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher')
     students = models.ManyToManyField(User, blank=True, related_name='student')
     add_student_national_code = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True)
 
@@ -47,7 +47,7 @@ class Exercise(models.Model):
 
 
 class AnswerExercise(models.Model):
-    author = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='documents/', blank=True, null=True)
