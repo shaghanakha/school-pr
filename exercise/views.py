@@ -99,6 +99,8 @@ class AnswerToExercise(APIView):
         answer_serializer = AnswerSerializer(data=request.data)
         if answer_serializer.is_valid():
             exe = get_object_or_404(Exercise, id=e_id)
+            if AnswerExercise.objects.filter(exercise=exe, author=request.user):
+                return Response({'message': 'you already answered'})
             if timezone.now() > exe.deadline:
                 return Response({'message': 'Deadline is expired!'})
             if exe.teacher not in request.user.has_teacher()[0]:
