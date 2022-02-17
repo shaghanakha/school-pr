@@ -79,11 +79,13 @@ WSGI_APPLICATION = 'school.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'schooldb',
+        'PASSWORD': 'S09133425841',
+        'USER': 'postgres',
+        'PORT': 5432
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
@@ -126,3 +128,5 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 }
+MEDIA_URL = '/documents/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "documents_root")

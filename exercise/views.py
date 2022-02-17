@@ -135,3 +135,4 @@ class LessonDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, AddPer)
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+

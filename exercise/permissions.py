@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from .models import Lesson, Exercise
 
 
 class AddPer(BasePermission):
@@ -38,4 +37,12 @@ class StudentEditPer(BasePermission):
                 return True
 
 
+class ProfilePer(BasePermission):
 
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            if request.user == obj or request.user.is_staff:
+                return True
+        if request.method in ("POST", "PUT", "PATCH"):
+            if request.user == obj or request.user.is_staff:
+                return True

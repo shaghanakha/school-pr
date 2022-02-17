@@ -37,6 +37,7 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LessonSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(read_only=True)
     teacher = serializers.StringRelatedField()
     students = serializers.StringRelatedField(read_only=True, many=True)
     add_student_national_code = serializers.CharField(write_only=True)
@@ -44,6 +45,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = (
+            "title",
             "add_student_national_code",
             "teacher",
             "students",
@@ -51,7 +53,7 @@ class LessonSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         student_nationalcode = validated_data.get(
-            'add_student_national_code', instance.add_student_national_code
+            'add_student_national_code'
         )
         instance.add_student(national_code=student_nationalcode)
         return instance
@@ -79,6 +81,7 @@ class AnswerExerciseSerializer(serializers.HyperlinkedModelSerializer):
     author = serializers.StringRelatedField()
     exercise = serializers.StringRelatedField()
     url = serializers.HyperlinkedIdentityField(view_name='answer_detail')
+    file = serializers.FileField()
     date = serializers.DateTimeField(read_only=True)
 
     class Meta:

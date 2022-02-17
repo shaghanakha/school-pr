@@ -1,11 +1,14 @@
 from django.shortcuts import render
-from .serializers import TeacherSerializer
-
+from .serializers import TeacherSerializer, UpdateProfile
+from rest_framework import generics
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
+from .models import User
+from rest_framework import viewsets
+from exercise.permissions import ProfilePer
 
 
 class LogoutAPIView(APIView):
@@ -25,3 +28,10 @@ class TeacherRegistration(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+class Profile(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsAuthenticated, ProfilePer)
+    queryset = User.objects.all()
+    serializer_class = UpdateProfile
+    lookup_field = 'username'
