@@ -9,7 +9,6 @@ global ExerciseSerializer
 
 class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
     teacher = serializers.StringRelatedField()
-    class_title = serializers.StringRelatedField()
     lesson = serializers.StringRelatedField()
     date = serializers.DateTimeField(read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='exercises_detail')
@@ -20,7 +19,6 @@ class ExerciseSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "lesson",
             "teacher",
-            "class_title",
             "title",
             "file",
             "body",
