@@ -29,10 +29,14 @@ class AccountsTest(APITestCase):
             "lesson_name": "lessonname2",
         }
 
-        return super().setUp()
+        self.client.post(self.register_url, self.user_data)
+        self.client.post(self.register_url, self.user_data2)
+        self.account1 = User.objects.get(username="user1")
+        self.account2 = User.objects.get(username="user2")
+        self.l1 = Lesson.objects.get(teacher=self.account1)
+        self.l2 = Lesson.objects.get(teacher=self.account2)
 
     def login_teacher_account(self):
-        self.client.post(self.register_url, self.user_data)
         login_response = self.client.post(self.login_url,
                                           data={"username": self.user_data["username"],
                                                 "password": self.user_data["password"]})
@@ -46,17 +50,12 @@ class AccountsTest(APITestCase):
         res = self.client.post(self.register_url)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_user_can_register_with_data(self):
-        res = self.client.post(self.register_url, self.user_data)
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
     def test_user_cannot_register_with_duplicate_data(self):
         self.client.post(self.register_url, self.user_data)
         res = self.client.post(self.register_url, self.user_data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_can_login(self):
-        self.client.post(self.register_url, self.user_data)
         res = self.client.post(self.login_url,
                                data={"username": self.user_data["username"], "password": self.user_data["password"]})
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -64,19 +63,18 @@ class AccountsTest(APITestCase):
     def test_teacher_can_add_student(self):
         header = self.login_teacher_account()
         res = self.client.put(
-            reverse('lessons_detail', kwargs={'pk': "1"}),
-            data={"add_student_national_code": "9998882221"}, format='json', **header)
-        student = User.objects.get(username="9998882221")
-        lesson = Lesson.objects.filter(id=1)
-        students = lesson[0].students.all()
+            reverse('lessons_detail', kwargs={'pk': self.l1.id}),
+            data={"add_student_national_code": "1111111111"}, format='json', **header)
+        student = User.objects.get(username="1111111111")
+        lesson = Lesson.objects.get(id=self.l1.id)
+        students = lesson.students.all()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertTrue(student in students)
 
     def test_teacher_cannot_add_student_in_others_lesson(self):
-        self.client.post(self.register_url, self.user_data2)
         header = self.login_teacher_account()
         res = self.client.get(
-            reverse('lessons_detail', kwargs={'pk': "2"}), **header)
+            reverse('lessons_detail', kwargs={'pk': self.l2.id}), **header)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_teacher_news(self):
