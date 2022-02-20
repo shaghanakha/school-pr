@@ -88,7 +88,7 @@ class AccountsTest(APITestCase):
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertIsNotNone(news)
 
-    def test_what_edit_profile(self):
+    def test_edit_profile(self):
         header = self.login_teacher_account()
         res = self.client.patch(
             reverse('profile', kwargs={'username': 'user1'}),
