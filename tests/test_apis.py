@@ -35,6 +35,7 @@ class AccountsTest(APITestCase):
         self.account2 = User.objects.get(username="user2")
         self.l1 = Lesson.objects.get(teacher=self.account1)
         self.l2 = Lesson.objects.get(teacher=self.account2)
+        self.sample_news = News.objects.create(teacher=self.account1, body="..", title="...")
 
     def login_teacher_account(self):
         login_response = self.client.post(self.login_url,
@@ -92,5 +93,14 @@ class AccountsTest(APITestCase):
             reverse('profile', kwargs={'username': 'user1'}),
             data={"first_name": "changed"}, format='json', **header)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        user = User.objects.filter(username='user1')
-        self.assertEqual(user[0].first_name, "changed")
+        user = User.objects.get(username='user1')
+        self.assertEqual(user.first_name, "changed")
+
+    def test_edit_news(self):
+        header = self.login_teacher_account()
+        res = self.client.patch(
+            reverse('news_detail', kwargs={'pk': self.sample_news.id}),
+            data={"title": "changed"}, format='json', **header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        news = News.objects.get(id=self.sample_news.id)
+        self.assertEqual(news.title, "changed")
