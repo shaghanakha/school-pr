@@ -61,7 +61,6 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class NewsSerializer(serializers.HyperlinkedModelSerializer):
     teacher = serializers.StringRelatedField()
-    class_title = serializers.StringRelatedField()
     date = serializers.DateTimeField(read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='news_detail')
 
@@ -70,7 +69,6 @@ class NewsSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             "url",
             "teacher",
-            "class_title",
             "title",
             "body",
             "date",
